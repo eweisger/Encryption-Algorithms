@@ -1,0 +1,50 @@
+Emma Weisgerber
+CSCI 373: Intro to Cyber Security - Dr. Brian Drawert
+Homework 2: Cryptography - 2/18/19
+-----------------------------------------------------
+Getting the decrypted message, making my own keys, and re-encryting it:
+
+To get the public key:
+openssl rsa -in task4_private.pem -out task4_public.pem -outform PEM -pubout
+
+To get the decryption key:
+openssl rsautl -decrypt -inkey task4_private.pem -in key.bin.enc -out task4_key.bin
+
+To decrypt task4_encrypted_message.dat:
+openssl enc -d -aes-256-cbc -in task4_encrypted_message.dat -out task4_decrypted_message.txt -pass file:./task4_key.bin
+
+Generated my own private key:
+openssl genrsa -des3 -out my_private.pem 2048
+with pass phrase: mushi
+
+Got my public key:
+openssl rsa -in my_private.pem -out my_public.pem -outform PEM -pubout
+with pass phrase: mushi
+
+Got my random key: 
+openssl rand -hex 64 > mykey.bin
+
+Re-encrypted the decrypted message with my random key:
+openssl enc -aes-256-cbc -salt -in task4_decrypted_message.txt -out task4_decrypted_message.txt.enc -pass file:./mykey.bin
+
+Encrypted my random key with my public key:
+openssl rsautl -encrypt -inkey my_public.pem -pubin -in mykey.bin -out mykey.bin.enc
+
+Tested decryption with:
+openssl enc -d -aes-256-cbc -in task4_decrypted_message.txt.enc -out test_decryption.txt -pass file:./mykey.bin
+It was successful.
+
+Realized I named it task4_decrypted_message.txt.enc and renamed it to task4_message.txt.enc, rechecked the decryption and it still worked.
+--------------------------------------------------------------
+To decrypt my encryption:
+I'm giving you both the public, private, and encrypted random key since I wasn't sure which ones you meant by "both" and since you gave us the key.bin.enc to decrypt yours.
+
+If your intention was to get the public key from the private key you can hopefully do that with:
+openssl rsa -in my_private.pem -out my_public.pem -outform PEM -pubout
+with pass phrase: mushi
+
+Get the decryption key with:
+openssl rsautl -decrypt -inkey my_private.pem -in mykey.bin.enc -out mykey.bin
+
+Decrypt with:
+openssl enc -d -aes-256-cbc -in task4_message.txt.enc -out task4_message_decrypted.txt -pass file:./mykey.bin

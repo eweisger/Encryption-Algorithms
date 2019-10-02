@@ -1,0 +1,19 @@
+Emma Weisgerber
+CSCI 373: Intro to Cyber Security - Dr. Brian Drawert
+Homework 2: Cryptography - 2/18/19
+-----------------------------------------------------
+After attempting to use the task5_public.pem to verify the file for a good hour, looking up the problem on stack overflow and found that it was actually a certificate...
+I got the public key from the certificate:
+openssl x509 -pubkey -noout -in task5_public.pem >task5_actual_pubkey.pem
+
+Using the actual public key to verify messages:
+openssl dgst -verify task5_actual_pubkey.pem -signature task5_message_sig.sha256 task5_message3.txt
+Checking each of the messages I found message3 was the one verified succefully
+
+I signed the file with my private key:
+openssl dgst -sha256 -sign my_private.pem -out task5.sig task5_message3.txt
+pass phrase: mushi
+
+Verified my own signiture with:
+openssl dgst -verify my_public.pem -signature task5.sig task5_message3.txt
+It was succesfully verified
